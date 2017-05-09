@@ -10,6 +10,7 @@ export default function form({
     static defaultProps = {
       fields: defaultFields,
       validate: defaultValidate,
+      blurTouch: true,
     }
 
     static childContextTypes = {
@@ -23,6 +24,7 @@ export default function form({
       value: PropTypes.object,
       touched: PropTypes.object,
       onTouch: PropTypes.func,
+      blurTouch: PropTypes.bool,
       onChange: PropTypes.func,
       onValidate: PropTypes.func,
     }
@@ -140,7 +142,7 @@ export default function form({
       const { values } = this.state;
       return {
         onChange: e => this.handleChange(name, e),
-        onBlur: () => this.touch([name]),
+        onBlur: () => { if (this.props.blurTouch) this.touch([name]); },
         value: values[name] || '',
         checked: typeof values[name] === 'boolean' ? values[name] : undefined,
       };
@@ -173,8 +175,11 @@ export default function form({
     }
 
     render() {
-      // eslint-disable-next-line no-unused-vars
-      const { value, onChange, onValidate, validate, fields, ...otherProps } = this.props;
+      const {
+        // eslint-disable-next-line no-unused-vars
+        value, onChange, onValidate, validate, fields, blurTouch,
+        ...otherProps
+      } = this.props;
       return <Wrapped {...otherProps} {...this.generatedProps()} />;
     }
   };
